@@ -4,7 +4,8 @@ import com.example.demo.domain.User;
 import com.example.demo.services.UserService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/user")
@@ -15,13 +16,16 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/{id}")
-    public User findUserById(@PathVariable Long id) {
-        return userService.findUser(id);
+    @GetMapping
+    public List<User> findAllUsers(@RequestParam(required = false) String email) {
+        if (email != null) {
+            return userService.findUserByEmail(email).stream().toList();
+        }
+        return userService.findAllUsers();
     }
 
-    @GetMapping
-    public Map<Long, User> findAllUsers() {
-        return userService.findAllUsers();
+    @GetMapping("/{id}")
+    public Optional<User> findUserById(@PathVariable Long id) {
+        return userService.findUserById(id);
     }
 }
