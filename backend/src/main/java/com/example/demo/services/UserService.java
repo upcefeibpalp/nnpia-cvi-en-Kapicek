@@ -28,7 +28,7 @@ public class UserService {
     }
 
     public User createUser(String email, String password) {
-        User user = new User(null, password, email);
+        User user = new User(null, password, email, true);
         return userRepository.save(user);
     }
 
@@ -43,10 +43,20 @@ public class UserService {
             return userRepository.save(user);
         });
     }
-
     public User getUserByIdOrThrow(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
+    }
+    public void activateUser(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        user.setActive(true);
+        userRepository.save(user);
+    }
+
+    public void deactivateUser(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        user.setActive(false);
+        userRepository.save(user);
     }
 
 }

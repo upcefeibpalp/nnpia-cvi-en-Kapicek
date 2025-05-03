@@ -17,4 +17,7 @@ public class User {
 
     private String password;
     private String email;
+
+    @Column(nullable = false)
+    private boolean active = true;
 }

@@ -19,7 +19,7 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) {
         if (userRepository.count() == 0) {
-            User admin = new User(null, "adminpass", "admin@example.com");
+            User admin = new User(null, "adminpass", "admin@example.com", true);
             userRepository.save(admin);
             logger.info("Admin uživatel byl inicializován: {}", admin);
         }

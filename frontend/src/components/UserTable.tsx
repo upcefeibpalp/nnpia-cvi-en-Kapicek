@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface User {
   id: number;
@@ -6,18 +6,27 @@ interface User {
   active: boolean;
 }
 
-const initialUsers: User[] = [
-  { id: 1, email: "luke@example.com", active: true },
-  { id: 2, email: "leia@example.com", active: false },
-  { id: 3, email: "han@example.com", active: true },
-];
-
 const UserTable: React.FC = () => {
-  const [users, setUsers] = useState<User[]>(initialUsers);
+  const [users, setUsers] = useState<User[]>([]);
 
-  const toggleActive = (id: number) => {
-    setUsers(users.map(user =>
-      user.id === id ? { ...user, active: !user.active } : user
+  // Načti uživatele z backendu
+  useEffect(() => {
+    async function fetchUsers() {
+      const response = await fetch("http://localhost:8080/api/v1/users");
+      const data = await response.json();
+      console.log("Fetched users:", data);
+      setUsers(data);
+    }
+
+    fetchUsers();
+  }, []);
+
+  const toggleActive = async (user: User) => {
+    const url = `http://localhost:8080/api/v1/users/${user.id}/${user.active ? 'deactivate' : 'activate'}`;
+    await fetch(url, { method: 'POST' });
+
+    setUsers(users.map(u =>
+      u.id === user.id ? { ...u, active: !u.active } : u
     ));
   };
 
@@ -39,7 +48,7 @@ const UserTable: React.FC = () => {
             <td className="border px-4 py-2">{user.active ? 'Yes' : 'No'}</td>
             <td className="border px-4 py-2">
               <button
-                onClick={() => toggleActive(user.id)}
+                onClick={() => toggleActive(user)}
                 className="bg-blue-500 text-white px-3 py-1 rounded"
               >
                 Toggle
