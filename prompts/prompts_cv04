@@ -1,0 +1,4 @@
+Navrhněte Spring Boot endpoint (verze API v1), který umožní aktualizovat uživatele podle jeho ID. Použijeme DTO jako vstupní i výstupní objekt a dodržujeme REST best practices. Heslo i email mohou být změněny.
+Použitá AI služba: ChatGPT
+Ověření výstupu: ověřeno praktickým testováním endpointu v Postmanu.
+Odkaz na REST best practices: https://www.vinaysahni.com/best-practices-for-a-pragmatic-restful-api

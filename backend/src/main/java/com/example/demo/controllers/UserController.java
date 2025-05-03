@@ -1,14 +1,20 @@
 package com.example.demo.controllers;
 
 import com.example.demo.domain.User;
+import com.example.demo.domain.UserDTO;
+import com.example.demo.domain.UserUpdateDTO;
 import com.example.demo.services.UserService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import com.example.demo.domain.UserCreateDTO;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/v1/users")
 public class UserController {
     private final UserService userService;
 
@@ -17,15 +23,46 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> findAllUsers(@RequestParam(required = false) String email) {
+    public List<UserDTO> findAllUsers(@RequestParam(required = false) String email) {
         if (email != null) {
-            return userService.findUserByEmail(email).stream().toList();
+            return userService.findUserByEmail(email)
+                    .map(user -> List.of(new UserDTO(user.getId(), user.getEmail())))
+                    .orElse(List.of());
         }
-        return userService.findAllUsers();
+        return userService.findAllUsers()
+                .stream()
+                .map(user -> new UserDTO(user.getId(), user.getEmail()))
+                .toList();
     }
 
     @GetMapping("/{id}")
-    public Optional<User> findUserById(@PathVariable Long id) {
-        return userService.findUserById(id);
+    public ResponseEntity<UserDTO> findUserById(@PathVariable Long id) {
+        return userService.findUserById(id)
+                .map(user -> ResponseEntity.ok(new UserDTO(user.getId(), user.getEmail())))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public ResponseEntity<UserDTO> createUser(@RequestBody UserCreateDTO dto) {
+        User created = userService.createUser(dto.getEmail(), dto.getPassword());
+        UserDTO userDTO = new UserDTO(created.getId(), created.getEmail());
+        URI location = URI.create("/api/v1/users/" + created.getId());
+        return ResponseEntity.created(location).body(userDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userService.deleteUserById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDTO> updateUser(
+            @PathVariable Long id,
+            @RequestBody UserUpdateDTO dto) {
+
+        return userService.updateUser(id, dto.getEmail(), dto.getPassword())
+                .map(updated -> ResponseEntity.ok(new UserDTO(updated.getId(), updated.getEmail())))
+                .orElse(ResponseEntity.notFound().build());
     }
 }

@@ -25,4 +25,22 @@ public class UserService {
     public Optional<User> findUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
+
+    public User createUser(String email, String password) {
+        User user = new User(null, password, email);
+        return userRepository.save(user);
+    }
+
+    public void deleteUserById(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    public Optional<User> updateUser(Long id, String email, String password) {
+        return userRepository.findById(id).map(user -> {
+            user.setEmail(email);
+            user.setPassword(password);
+            return userRepository.save(user);
+        });
+    }
+
 }
