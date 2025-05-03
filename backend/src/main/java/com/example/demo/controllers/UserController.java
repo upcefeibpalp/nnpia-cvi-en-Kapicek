@@ -3,11 +3,15 @@ package com.example.demo.controllers;
 import com.example.demo.domain.User;
 import com.example.demo.domain.UserDTO;
 import com.example.demo.domain.UserUpdateDTO;
+import com.example.demo.exceptions.UserNotFoundException;
 import com.example.demo.services.UserService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import com.example.demo.domain.UserCreateDTO;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.http.HttpStatus;
 
 import java.net.URI;
 import java.util.List;
@@ -64,5 +68,11 @@ public class UserController {
         return userService.updateUser(id, dto.getEmail(), dto.getPassword())
                 .map(updated -> ResponseEntity.ok(new UserDTO(updated.getId(), updated.getEmail())))
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public void handleUserNotFound() {
+        // nic nedělej, vrátí jen 404
     }
 }

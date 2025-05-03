@@ -1,0 +1,2 @@
+Navrhni JUnit test třídy UserController v Spring Boot s využitím @WebMvcTest a MockMvc. Mockni UserService a ověř, že GET /api/v1/users/{id} vrací správný uživatelský JSON nebo 404. Výstup validuj.
+Použitá AI služba: ChatGPT

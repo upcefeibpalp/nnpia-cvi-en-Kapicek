@@ -1,6 +1,7 @@
 package com.example.demo.services;
 
 import com.example.demo.domain.User;
+import com.example.demo.exceptions.UserNotFoundException;
 import com.example.demo.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -41,6 +42,11 @@ public class UserService {
             user.setPassword(password);
             return userRepository.save(user);
         });
+    }
+
+    public User getUserByIdOrThrow(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
     }
 
 }
