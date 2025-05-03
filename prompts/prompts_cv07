@@ -1,0 +1,4 @@
+Doporuč vhodnou UI knihovnu pro stylování React komponent s minimální konfigurací. Chci ji použít k vytvoření responsivní tabulky a základních tlačítek.
+Použitá AI služba: ChatGPT
+Ověření výstupu: TailwindCSS byl nainstalován, nakonfigurován a použit pro tabulku a komponenty v React aplikaci. Funguje dle očekávání.
+Odkaz: https://tailwindcss.com/docs/guides/vite
